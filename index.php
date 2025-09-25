@@ -19,7 +19,7 @@ $clanky = getClanky();
             <h1>Správa článkov</h1>
             <nav>
                 <a href="index.php" class="active">Zoznam článkov</a>
-                <a href="add.php">Pridať článok</a>
+                <a href="admin/login.php">Admin prihlásenie</a>
             </nav>
         </header>
 
@@ -27,7 +27,7 @@ $clanky = getClanky();
             <h2>Všetky články</h2>
             
             <?php if (empty($clanky)): ?>
-                <p class="no-articles">Zatiaľ nie sú pridané žiadne články. <a href="add.php">Pridať prvý článok</a></p>
+                <p class="no-articles">Zatiaľ nie sú pridané žiadne články.</p>
             <?php else: ?>
                 <div class="articles-list">
                     <?php foreach ($clanky as $clanok): ?>

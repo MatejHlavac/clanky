@@ -46,4 +46,34 @@ function getClanokById($id) {
         return false;
     }
 }
+
+/**
+ * Aktualizuje existujúci článok
+ */
+function updateClanok($id, $title, $content) {
+    global $pdo;
+    
+    try {
+        $stmt = $pdo->prepare("UPDATE clanky SET title = ?, content = ?, date_updated = NOW() WHERE id = ?");
+        return $stmt->execute([$title, $content, $id]);
+    } catch(PDOException $e) {
+        error_log("Chyba pri úprave článku: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Zmaže článok z databázy
+ */
+function deleteClanok($id) {
+    global $pdo;
+    
+    try {
+        $stmt = $pdo->prepare("DELETE FROM clanky WHERE id = ?");
+        return $stmt->execute([$id]);
+    } catch(PDOException $e) {
+        error_log("Chyba pri mazaní článku: " . $e->getMessage());
+        return false;
+    }
+}
 ?>
