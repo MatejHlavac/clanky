@@ -38,6 +38,8 @@ if ($_POST) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pridať článok - Admin Panel</title>
     <link rel="stylesheet" href="../assets/css/style.css">
+    <!-- CKEditor - jednoduchší editor -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <style>
         .admin-header {
             background: #2c3e50;
@@ -110,5 +112,31 @@ if ($_POST) {
             </form>
         </main>
     </div>
+
+    <script>
+        // CKEditor konfigurácia
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof ClassicEditor !== 'undefined') {
+                ClassicEditor
+                    .create(document.querySelector('#content'), {
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
+                        heading: {
+                            options: [
+                                { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+                                { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+                                { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+                                { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
+                            ]
+                        }
+                    })
+                    .then(editor => {
+                        console.log('CKEditor initialized successfully');
+                    })
+                    .catch(error => {
+                        console.error('CKEditor initialization failed:', error);
+                    });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -35,7 +35,7 @@ $clanky = getClanky();
                             <h3><?php echo htmlspecialchars($clanok['title']); ?></h3>
                             <p class="article-date"><?php echo date('d.m.Y H:i', strtotime($clanok['date_created'])); ?></p>
                             <div class="article-content">
-                                <?php echo nl2br(htmlspecialchars($clanok['content'])); ?>
+                                <?php echo $clanok['content']; ?>
                             </div>
                         </article>
                     <?php endforeach; ?>

@@ -241,3 +241,74 @@ h2 {
         text-align: center;
     }
 }
+
+/* TinyMCE Editor štýly */
+.tox-tinymce {
+    border-radius: 4px !important;
+    border: 1px solid #ddd !important;
+}
+
+.tox .tox-toolbar__primary {
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #ddd !important;
+}
+
+.tox .tox-edit-area__iframe {
+    border-radius: 0 0 4px 4px !important;
+}
+
+/* Štýly pre zobrazenie HTML obsahu */
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4,
+.article-content h5,
+.article-content h6 {
+    color: #2c3e50;
+    margin: 20px 0 10px 0;
+    font-weight: 600;
+}
+
+.article-content h1 { font-size: 1.8em; }
+.article-content h2 { font-size: 1.5em; }
+.article-content h3 { font-size: 1.3em; }
+
+.article-content p {
+    margin: 15px 0;
+    line-height: 1.7;
+}
+
+.article-content ul,
+.article-content ol {
+    margin: 15px 0;
+    padding-left: 30px;
+}
+
+.article-content li {
+    margin: 5px 0;
+}
+
+.article-content blockquote {
+    border-left: 4px solid #3498db;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background: #f8f9fa;
+    font-style: italic;
+}
+
+.article-content a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+.article-content a:hover {
+    text-decoration: underline;
+}
+
+.article-content strong {
+    font-weight: 600;
+}
+
+.article-content em {
+    font-style: italic;
+}
