@@ -1,0 +1,30 @@
+# Ignorované súbory pre Git
+
+# Konfiguračné súbory s citlivými údajmi
+config/database_local.php
+
+# Dočasné súbory
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# Log súbory
+*.log
+logs/
+
+# Uploadované súbory (ak budú pridané neskôr)
+uploads/
+
+# IDE súbory
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (ak budú pridané neskôr)
+node_modules/
+
+# Backup súbory
+*.bak
+*.backup
