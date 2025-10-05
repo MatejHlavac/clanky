@@ -141,7 +141,8 @@ h2 {
 
 /* Form styles */
 .article-form {
-    max-width: 600px;
+    max-width: 100%;
+    width: 100%;
 }
 
 .form-group {
@@ -240,6 +241,77 @@ h2 {
     .btn {
         text-align: center;
     }
+    
+    .ck-editor__editable {
+        min-height: 300px !important;
+    }
+}
+
+/* Zvýšenie veľkosti editovacej plochy */
+.ck-editor {
+    width: 100% !important;
+}
+
+.ck-editor__main {
+    width: 100% !important;
+}
+
+.ck-editor__editable {
+    width: 100% !important;
+    min-height: 500px !important;
+}
+
+/* Zarovnanie formulárov */
+.article-form {
+    width: 100%;
+    max-width: 100%;
+}
+
+.form-group {
+    width: 100%;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Obtiekanie obrázkov textom na verejnej stránke */
+.article-content .image-inline {
+    display: inline-block !important;
+    margin: 0 10px !important;
+    vertical-align: middle;
+}
+
+.article-content .image-side {
+    float: right !important;
+    margin: 0 0 10px 10px !important;
+    max-width: 50%;
+}
+
+.article-content .image-block {
+    display: block !important;
+    margin: 10px auto !important;
+    max-width: 100%;
+}
+
+.article-content .image-left {
+    float: left !important;
+    margin: 0 10px 10px 0 !important;
+    max-width: 50%;
+}
+
+.article-content .image-center {
+    display: block !important;
+    margin: 10px auto !important;
+    text-align: center;
+}
+
+.article-content .image-right {
+    float: right !important;
+    margin: 0 0 10px 10px !important;
+    max-width: 50%;
 }
 
 /* TinyMCE Editor štýly */

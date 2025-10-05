@@ -55,7 +55,7 @@ if ($_POST) {
     <title>Upraviť článok - Admin Panel</title>
     <link rel="stylesheet" href="../assets/css/style.css">
     <!-- CKEditor - WYSIWYG editor -->
-    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/decoupled-document/ckeditor.js"></script>
     <style>
         .admin-header {
             background: #2c3e50;
@@ -84,6 +84,62 @@ if ($_POST) {
         }
         .admin-nav .active {
             background: #f39c12;
+        }
+        
+        /* CKEditor štýly pre obrázky */
+        .ck-editor__editable img {
+            max-width: 100% !important;
+            height: auto !important;
+            display: block !important;
+        }
+        
+        /* Obtiekanie obrázkov textom */
+        .ck-editor__editable .image-inline {
+            display: inline-block !important;
+            margin: 0 10px !important;
+        }
+        
+        .ck-editor__editable .image-side {
+            float: right !important;
+            margin: 0 0 10px 10px !important;
+        }
+        
+        .ck-editor__editable .image-block {
+            display: block !important;
+            margin: 10px auto !important;
+        }
+        
+        .ck-editor__editable {
+            min-height: 500px;
+        }
+        
+        /* Zvýšenie veľkosti editovacej plochy */
+        .ck-editor {
+            width: 100% !important;
+        }
+        
+        .ck-editor__main {
+            width: 100% !important;
+        }
+        
+        .ck-editor__editable {
+            width: 100% !important;
+            min-height: 500px !important;
+        }
+        
+        /* Zarovnanie na stred */
+        .article-form {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        
+        .form-group {
+            width: 100%;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
         }
     </style>
 </head>
@@ -119,7 +175,14 @@ if ($_POST) {
                 
                 <div class="form-group">
                     <label for="content">Obsah článku:</label>
-                    <textarea id="content" name="content" rows="15" required><?php echo htmlspecialchars($clanok['content']); ?></textarea>
+                    <div id="toolbar-container"></div>
+                    <div id="image-upload-area" style="border: 2px dashed #ccc; padding: 20px; margin-bottom: 10px; text-align: center; background: #f9f9f9; border-radius: 4px;">
+                        <p>Presuňte obrázky sem alebo kliknite na vybratie súborov</p>
+                        <input type="file" id="image-input" multiple accept="image/*" style="display: none;">
+                        <button type="button" onclick="document.getElementById('image-input').click()" class="btn btn-secondary">Vybrať obrázky</button>
+                    </div>
+                    <div id="content" name="content"><?php echo $clanok['content']; ?></div>
+                    <textarea id="content-hidden" name="content" style="display: none;"><?php echo htmlspecialchars($clanok['content']); ?></textarea>
                 </div>
                 
                 <div class="form-actions">
@@ -131,12 +194,24 @@ if ($_POST) {
     </div>
 
     <script>
+        let editor;
+        
         // CKEditor konfigurácia pre editáciu
         document.addEventListener('DOMContentLoaded', function() {
-            if (typeof ClassicEditor !== 'undefined') {
-                ClassicEditor
+            if (typeof DecoupledEditor !== 'undefined') {
+                DecoupledEditor
                     .create(document.querySelector('#content'), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', '|', 'outdent', 'indent', '|', 'blockQuote', 'insertTable', 'undo', 'redo'],
+                        toolbar: [
+                            'heading', '|', 
+                            'bold', 'italic', 'underline', 'strikethrough', '|',
+                            'fontSize', 'fontColor', 'fontBackgroundColor', '|',
+                            'alignment', '|',
+                            'bulletedList', 'numberedList', '|', 
+                            'outdent', 'indent', '|', 
+                            'blockQuote', 'insertTable', '|',
+                            'link', 'imageUpload', '|',
+                            'undo', 'redo'
+                        ],
                         heading: {
                             options: [
                                 { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
@@ -144,15 +219,171 @@ if ($_POST) {
                                 { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
                                 { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' }
                             ]
+                        },
+                        fontSize: {
+                            options: [9, 11, 13, 'default', 17, 19, 21]
+                        },
+                        alignment: {
+                            options: ['left', 'center', 'right', 'justify']
+                        },
+                        image: {
+                            toolbar: [
+                                'imageTextAlternative', 
+                                'imageStyle:inline', 
+                                'imageStyle:block', 
+                                'imageStyle:side',
+                                '|',
+                                'imageResize'
+                            ],
+                            resizeOptions: [
+                                {
+                                    name: 'imageResize:original',
+                                    label: 'Original',
+                                    value: null
+                                },
+                                {
+                                    name: 'imageResize:25',
+                                    label: '25%',
+                                    value: '25'
+                                },
+                                {
+                                    name: 'imageResize:50',
+                                    label: '50%',
+                                    value: '50'
+                                },
+                                {
+                                    name: 'imageResize:75',
+                                    label: '75%',
+                                    value: '75'
+                                }
+                            ]
+                        },
+                        table: {
+                            contentToolbar: [
+                                'tableColumn', 'tableRow', 'mergeTableCells',
+                                'tableProperties', 'tableCellProperties'
+                            ]
                         }
                     })
-                    .then(editor => {
+                    .then(editorInstance => {
+                        editor = editorInstance;
                         console.log('CKEditor initialized for editing');
                     })
                     .catch(error => {
                         console.error('CKEditor initialization failed:', error);
                     });
             }
+            
+            // Upload funkcionalita
+            setupImageUpload();
+        });
+        
+        function setupImageUpload() {
+            const uploadArea = document.getElementById('image-upload-area');
+            const fileInput = document.getElementById('image-input');
+            
+            // Drag & drop
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = '#e9ecef';
+            });
+            
+            uploadArea.addEventListener('dragleave', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = '#f9f9f9';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = '#f9f9f9';
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            // File input change
+            fileInput.addEventListener('change', function(e) {
+                handleFiles(e.target.files);
+            });
+        }
+        
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.type.startsWith('image/')) {
+                    uploadImage(file);
+                }
+            }
+        }
+        
+        function uploadImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            fetch('upload.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    insertImageToEditor(data.url);
+                } else {
+                    alert('Chyba pri uploadu: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('Chyba pri uploadu obrázka');
+            });
+        }
+        
+        function insertImageToEditor(imageUrl) {
+            if (editor) {
+                editor.model.change(writer => {
+                    const imageElement = writer.createElement('imageBlock', {
+                        src: imageUrl
+                    });
+                    editor.model.insertContent(imageElement);
+                });
+            }
+        }
+        
+        // Zabezpečenie, že sa CKEditor obsah pošle pri submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            console.log('Form submit event triggered');
+            
+            // Custom validácia
+            const title = document.getElementById('title').value.trim();
+            let content = '';
+            
+            if (editor) {
+                console.log('Updating source element');
+                // Aktualizuj skrytý textarea s obsahom z CKEditor
+                content = editor.getData();
+                document.getElementById('content-hidden').value = content;
+            } else {
+                content = document.getElementById('content').innerHTML.trim();
+                document.getElementById('content-hidden').value = content;
+            }
+            
+            // Validácia
+            if (!title) {
+                e.preventDefault();
+                alert('Názov článku je povinný.');
+                document.getElementById('title').focus();
+                return false;
+            }
+            
+            if (!content) {
+                e.preventDefault();
+                alert('Obsah článku je povinný.');
+                if (editor) {
+                    editor.focus();
+                } else {
+                    document.getElementById('content').focus();
+                }
+                return false;
+            }
+            
+            console.log('Form validation passed');
         });
     </script>
 </body>
